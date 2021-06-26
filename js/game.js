@@ -1,3 +1,8 @@
+const KEYS = {
+    LEFT: 37,
+    RIGHT: 39
+};
+
 let game = {
     ball: null,
     blocks: [],
@@ -17,18 +22,13 @@ let game = {
     },
     setEvents() {
         window.addEventListener("keydown", e => {
-            // move to the left
-            if (e.keyCode === 37) {
-                this.platform.dx = -this.platform.velocity;
-            }
-            // move to the right
-            else if (e.keyCode === 39) {
-                this.platform.dx = this.platform.velocity;
+            if (e.keyCode === KEYS.LEFT || e.keyCode === KEYS.RIGHT) {
+                this.platform.start(e.keyCode);
             }
         });
 
         window.addEventListener("keyup", e => {
-            this.platform.dx = 0;
+            this.platform.stop();
         });
     },
     preload(callback) {
@@ -102,8 +102,19 @@ game.platform = {
     move() {
         if (this.dx) {
             this.x += this.dx;
-            game.ball += this.dx;
+            game.ball.x += this.dx;
         }
+    },
+    start(direction) {
+        if (direction === KEYS.LEFT) {
+            this.dx = -this.velocity;
+        }
+        else if (direction === KEYS.RIGHT) {
+            this.dx = this.velocity;
+        }
+    },
+    stop() {
+        this.dx = 0;
     }
 };
 
