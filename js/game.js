@@ -82,15 +82,24 @@ let game = {
             }
         }
     },
-    update() {
-        this.platform.move();
-        this.ball.move();
-
+    collideBlocks() {
         for (const block of this.blocks) {
             if (this.ball.collide(block)) {
                 this.ball.bumpBlock(block);
             }
         }
+    },
+    collidePlatform() {
+        if (this.ball.collide(this.platform)) {
+            this.ball.bumpPlatform(this.platform);
+        }
+
+    },
+    update() {
+        this.platform.move();
+        this.ball.move();
+        this.collideBlocks();
+        this.collidePlatform();
     },
     run() {
         window.requestAnimationFrame(() => {
@@ -121,6 +130,11 @@ game.ball = {
     height: 20,
     bumpBlock(block) {
         this.dy *= -1;
+    },
+    bumpPlatform(platform) {
+        this.dy *= -1;
+        let touchX = this.x + this.width/2;
+        this.dx = this.velocity * platform.getTouchOffset(touchX);
     },
     collide(element) {
         let x = this.x + this.dx;
@@ -153,11 +167,19 @@ game.platform = {
     dx: 0,
     x: 280,
     y: 300,
+    height: 14,
+    width: 100,
     fire() {
         if (this.ball) {
             this.ball.start();
             this.ball = null;
         }
+    },
+    getTouchOffset(xArg) {
+        let diff = (this.x + this.width) - xArg;
+        let offset = this.width - diff;
+        let result = 2 * offset / this.width;
+        return result - 1;
     },
     move() {
         if (this.dx) {
