@@ -109,6 +109,7 @@ let game = {
         this.collideBlocks();
         this.platform.move();
         this.ball.collideWorldBounds();
+        this.platform.collideWorldBounds();
         this.ball.move();
         this.collideBlocks();
         this.collidePlatform();
@@ -145,6 +146,10 @@ game.ball = {
         block.active = false;
     },
     bumpPlatform(platform) {
+        if (platform.dx) {
+            this.x += platform.dx;
+        }
+
         if (this.dy > 0) {
             this.dy = -this.velocity;
             let touchX = this.x + this.width / 2;
@@ -214,6 +219,16 @@ game.platform = {
     y: 300,
     height: 14,
     width: 100,
+    collideWorldBounds() {
+        let x = this.x + this.dx;
+        let platformRight = x + this.width;
+        let worldLeft = 0;
+        let worldRight = game.width;
+
+        if (x < worldLeft || platformRight > worldRight) {
+            this.dx = 0;
+        }
+    },
     fire() {
         if (this.ball) {
             this.ball.start();
