@@ -70,7 +70,14 @@ let game = {
     create() {
         for (let row = 0; row < this.rows; row++) {
             for (let column = 0; column < this.columns; column++) {
-                this.blocks = [...this.blocks, { x: (64 * column) + 65, y: (24 * row) + 35 }];
+                this.blocks = [...this.blocks, 
+                    { 
+                      x: (64 * column) + 65,
+                      y: (24 * row) + 35,
+                      height: 20,
+                      width: 60
+                    }
+                ];
                 // this.blocks.push({ x: 60 * column, y: 20 * row });
             }
         }
@@ -78,6 +85,12 @@ let game = {
     update() {
         this.platform.move();
         this.ball.move();
+
+        for (const block of this.blocks) {
+            if (this.ball.collide(block)) {
+                this.ball.bumpBlock(block);
+            }
+        }
     },
     run() {
         window.requestAnimationFrame(() => {
@@ -106,6 +119,20 @@ game.ball = {
     y: 280,
     width: 20,
     height: 20,
+    bumpBlock(block) {
+        this.dy *= -1;
+    },
+    collide(element) {
+        let x = this.x + this.dx;
+        let y = this.y + this.dy;
+
+        if (x + this.width > element.x && x < element.x + element.width &&
+            y + this.height > element.y && y < element.y + element.height) {
+            return true;
+        } else {
+            return false;
+        }
+    },
     move() {
         if (this.dy) {
             this.y += this.dy;
