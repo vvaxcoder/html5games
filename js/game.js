@@ -58,25 +58,28 @@ let game = {
         this.ctx.clearRect(0, 0, this.width, this.height);
         this.ctx.drawImage(this.sprites.background, 0, 0);
         this.ctx.drawImage(this.sprites.ball, 0, 0, this.ball.width, this.ball.height, this.ball.x,
-                           this.ball.y, this.ball.width, this.ball.height);
+            this.ball.y, this.ball.width, this.ball.height);
         this.ctx.drawImage(this.sprites.platform, this.platform.x, this.platform.y);
         this.renderBlocks();
     },
     renderBlocks() {
         for (const block of this.blocks) {
-            this.ctx.drawImage(this.sprites.block, block.x, block.y);
+            if (block.active) {
+                this.ctx.drawImage(this.sprites.block, block.x, block.y);
+            }
         }
     },
     create() {
         for (let row = 0; row < this.rows; row++) {
             for (let column = 0; column < this.columns; column++) {
-                this.blocks = [...this.blocks, 
-                    { 
-                      x: (64 * column) + 65,
-                      y: (24 * row) + 35,
-                      height: 20,
-                      width: 60
-                    }
+                this.blocks = [...this.blocks,
+                {
+                    active: true,
+                    x: (64 * column) + 65,
+                    y: (24 * row) + 35,
+                    height: 20,
+                    width: 60
+                }
                 ];
                 // this.blocks.push({ x: 60 * column, y: 20 * row });
             }
@@ -84,7 +87,7 @@ let game = {
     },
     collideBlocks() {
         for (const block of this.blocks) {
-            if (this.ball.collide(block)) {
+            if (block.active && this.ball.collide(block)) {
                 this.ball.bumpBlock(block);
             }
         }
@@ -130,10 +133,11 @@ game.ball = {
     height: 20,
     bumpBlock(block) {
         this.dy *= -1;
+        block.active = false;
     },
     bumpPlatform(platform) {
         this.dy *= -1;
-        let touchX = this.x + this.width/2;
+        let touchX = this.x + this.width / 2;
         this.dx = this.velocity * platform.getTouchOffset(touchX);
     },
     collide(element) {
