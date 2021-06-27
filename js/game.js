@@ -17,24 +17,22 @@ let game = {
         background: null,
         ball: null,
         platform: null,
-        block: null,
+        block: null
     },
     init: function () {
-        this.ctx = document.querySelector("#myCanvas").getContext("2d");
+        this.ctx = document.querySelector('#myCanvas').getContext('2d');
         this.setEvents();
     },
     setEvents() {
-        window.addEventListener("keydown", e => {
+        window.addEventListener('keydown', e => {
             if (e.keyCode === KEYS.SPACE) {
                 this.platform.fire();
-            }
-
-            else if (e.keyCode === KEYS.LEFT || e.keyCode === KEYS.RIGHT) {
+            } else if (e.keyCode === KEYS.LEFT || e.keyCode === KEYS.RIGHT) {
                 this.platform.start(e.keyCode);
             }
         });
 
-        window.addEventListener("keyup", e => {
+        window.addEventListener('keyup', e => {
             this.platform.stop();
         });
     },
@@ -51,14 +49,23 @@ let game = {
         for (let key in this.sprites) {
             this.sprites[key] = new Image();
             this.sprites[key].src = `img/${key}.png`;
-            this.sprites[key].addEventListener("load", onImageLoad);
+            this.sprites[key].addEventListener('load', onImageLoad);
         }
     },
     render() {
         this.ctx.clearRect(0, 0, this.width, this.height);
         this.ctx.drawImage(this.sprites.background, 0, 0);
-        this.ctx.drawImage(this.sprites.ball, 0, 0, this.ball.width, this.ball.height, this.ball.x,
-            this.ball.y, this.ball.width, this.ball.height);
+        this.ctx.drawImage(
+            this.sprites.ball,
+            0,
+            0,
+            this.ball.width,
+            this.ball.height,
+            this.ball.x,
+            this.ball.y,
+            this.ball.width,
+            this.ball.height
+        );
         this.ctx.drawImage(this.sprites.platform, this.platform.x, this.platform.y);
         this.renderBlocks();
     },
@@ -72,14 +79,15 @@ let game = {
     create() {
         for (let row = 0; row < this.rows; row++) {
             for (let column = 0; column < this.columns; column++) {
-                this.blocks = [...this.blocks,
-                {
-                    active: true,
-                    x: (64 * column) + 65,
-                    y: (24 * row) + 35,
-                    height: 20,
-                    width: 60
-                }
+                this.blocks = [
+                    ...this.blocks,
+                    {
+                        active: true,
+                        x: 64 * column + 65,
+                        y: 24 * row + 35,
+                        height: 20,
+                        width: 60
+                    }
                 ];
                 // this.blocks.push({ x: 60 * column, y: 20 * row });
             }
@@ -96,10 +104,11 @@ let game = {
         if (this.ball.collide(this.platform)) {
             this.ball.bumpPlatform(this.platform);
         }
-
     },
     update() {
+        this.collideBlocks();
         this.platform.move();
+        this.ball.collideWorldBounds();
         this.ball.move();
         this.collideBlocks();
         this.collidePlatform();
@@ -121,7 +130,7 @@ let game = {
     },
     random(min, max) {
         return Math.floor(Math.random() * (max - min + 1) + min);
-    },
+    }
 };
 
 game.ball = {
@@ -136,19 +145,51 @@ game.ball = {
         block.active = false;
     },
     bumpPlatform(platform) {
-        this.dy *= -1;
-        let touchX = this.x + this.width / 2;
-        this.dx = this.velocity * platform.getTouchOffset(touchX);
+        if (this.dy > 0) {
+            this.dy = -this.velocity;
+            let touchX = this.x + this.width / 2;
+            this.dx = this.velocity * platform.getTouchOffset(touchX);
+        }
     },
     collide(element) {
         let x = this.x + this.dx;
         let y = this.y + this.dy;
 
-        if (x + this.width > element.x && x < element.x + element.width &&
-            y + this.height > element.y && y < element.y + element.height) {
+        if (
+            x + this.width > element.x &&
+            x < element.x + element.width &&
+            y + this.height > element.y &&
+            y < element.y + element.height
+        ) {
             return true;
         } else {
             return false;
+        }
+    },
+    collideWorldBounds() {
+        let x = this.x + this.dx;
+        let y = this.y + this.dy;
+        let ballRight = x + this.width;
+        let ballBottom = y + this.height;
+        let worldLeft = 0;
+        let worldRight = game.width;
+        let worldTop = 0;
+        let worldBottom = game.height;
+
+        if (x < worldLeft) {
+            this.x = 0;
+            this.dx = this.velocity;
+        }
+        else if (ballRight > worldRight) {
+            this.x = worldRight - this.width;
+            this.dx = -this.velocity;
+        }
+        else if (y < worldTop) {
+            this.y = 0;
+            this.dy = this.velocity;
+        }
+        else if (ballBottom < worldBottom) {
+            console.log('game over');
         }
     },
     move() {
@@ -180,9 +221,9 @@ game.platform = {
         }
     },
     getTouchOffset(xArg) {
-        let diff = (this.x + this.width) - xArg;
+        let diff = this.x + this.width - xArg;
         let offset = this.width - diff;
-        let result = 2 * offset / this.width;
+        let result = (2 * offset) / this.width;
         return result - 1;
     },
     move() {
@@ -197,8 +238,7 @@ game.platform = {
     start(direction) {
         if (direction === KEYS.LEFT) {
             this.dx = -this.velocity;
-        }
-        else if (direction === KEYS.RIGHT) {
+        } else if (direction === KEYS.RIGHT) {
             this.dx = this.velocity;
         }
     },
