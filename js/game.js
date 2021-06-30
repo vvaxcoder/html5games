@@ -19,6 +19,7 @@ let game = {
         platform: null,
         block: null
     },
+    running: true,
     init: function () {
         this.ctx = document.querySelector('#myCanvas').getContext('2d');
         this.setEvents();
@@ -115,11 +116,13 @@ let game = {
         this.collidePlatform();
     },
     run() {
-        window.requestAnimationFrame(() => {
-            this.update();
-            this.render();
-            this.run();
-        });
+        if (this.running) {
+            window.requestAnimationFrame(() => {
+                this.update();
+                this.render();
+                this.run();
+            });
+        }
     },
     start: function () {
         this.init();
@@ -195,6 +198,12 @@ game.ball = {
         }
         else if (ballBottom < worldBottom) {
             console.log('game over');
+            //1. stop the game
+            game.running = false;
+            //2. show message about stop the game
+            alert('You are lose!');
+            //3. restrt the game, reload the page
+            window.location.reload();
         }
     },
     move() {
