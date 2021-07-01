@@ -13,6 +13,7 @@ let game = {
     height: 360,
     ctx: null,
     platform: null,
+    scores: 0,
     sprites: {
         background: null,
         ball: null,
@@ -90,14 +91,22 @@ let game = {
                         width: 60
                     }
                 ];
-                // this.blocks.push({ x: 60 * column, y: 20 * row });
             }
+        }
+    },
+    addScore() {
+        ++this.addScore;
+
+        if (this.scores >= this.blocks.length) {
+            //end game
+            this.game('You are win!');
         }
     },
     collideBlocks() {
         for (const block of this.blocks) {
             if (block.active && this.ball.collide(block)) {
                 this.ball.bumpBlock(block);
+                this.addScore();
             }
         }
     },
@@ -105,6 +114,11 @@ let game = {
         if (this.ball.collide(this.platform)) {
             this.ball.bumpPlatform(this.platform);
         }
+    },
+    end(message) {
+        this.running = false;
+        alert(message);
+        window.location.reload();
     },
     update() {
         this.collideBlocks();
@@ -197,13 +211,7 @@ game.ball = {
             this.dy = this.velocity;
         }
         else if (ballBottom < worldBottom) {
-            console.log('game over');
-            //1. stop the game
-            game.running = false;
-            //2. show message about stop the game
-            alert('You are lose!');
-            //3. restrt the game, reload the page
-            window.location.reload();
+            game.end('You are lose!');
         }
     },
     move() {
