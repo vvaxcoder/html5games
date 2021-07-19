@@ -5,6 +5,7 @@ let game = {
     height: 360,
     sprites: {
         background: null,
+        body: null,
         cell: null,
     },
     width: 640,
@@ -41,10 +42,12 @@ let game = {
     },
     run() {
         this.board.create();
+        this.snake.create();
 
         window.requestAnimationFrame(() => {
             this.ctx.drawImage(this.sprites.background, 0, 0);
             this.board.render();
+            this.snake.render();
         });
     },
 };

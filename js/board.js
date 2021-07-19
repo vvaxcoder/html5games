@@ -24,6 +24,9 @@ game.board = {
         }
     },
     game: game,
+    getCell(row, col) {
+        return this.cells.find(cell => cell.row === row && cell.col === col);
+    },
     render() {
         this.cells.forEach(cell => {
             this.game.ctx.drawImage(this.game.sprites.cell, cell.x, cell.y);
