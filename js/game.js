@@ -13,11 +13,18 @@ let game = {
         },
     },
     fitHeight(data) {
-        this.width = Math.floor((data.realwidth * data.maxHeight) / data.realHeight);
-        this.width = Math.min(this.width, data.minWidth);
-        this.width = Math.max(this.width, data.maxWidth);
-        this.height = Math.floor((this.width * data.realHeight) / data.realwidth);
+        this.width = Math.floor((data.realWidth * data.maxHeight) / data.realHeight);
+        this.width = Math.min(this.width, data.maxWidth);
+        this.width = Math.max(this.width, data.minWidth);
+        this.height = Math.floor((this.width * data.realHeight) / data.realWidth);
         this.canvas.style.height = '100%';
+    },
+    fitWidth(data) {
+        this.height = Math.floor((this.width * data.realHeight)/data.realWidth);
+        this.height = Math.min(this.height, data.maxHeight);
+        this.height = Math.max(this.height, data.minHeight);
+        this.width = Math.floor((data.realWidth * this.height) / data.realHeight);
+        this.canvas.style.width = '100%';
     },
     height: 0,
     initDimensions() {
@@ -26,11 +33,15 @@ let game = {
             maxHeight: this.dimensions.max.height,
             minWidth: this.dimensions.min.width,
             minHeight: this.dimensions.min.height,
-            realwidth: window.innerWidth,
+            realWidth: window.innerWidth,
             realHeight: window.innerHeight,
         };
 
-        this.fitHeight(data);
+        if ((data.realWidth/data.realHeight) > (data.maxWidth/data.maxHeight)) {
+            this.fitWidth(data);
+        } else {
+            this.fitHeight(data);
+        }
 
         this.canvas.width = this.width;
         this.canvas.height = this.height;
