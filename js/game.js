@@ -85,15 +85,30 @@ let game = {
 
 
     },
-    run() {
+    create() {
+        // create game objects
         this.board.create();
         this.snake.create();
-
+    },
+    render() {
+        // render game objects
         window.requestAnimationFrame(() => {
+            this.ctx.clearRect(0, 0, this.width, this.height);
             this.ctx.drawImage(this.sprites.background, (this.width - this.sprites.background.width)/2, (this.height - this.sprites.background.height)/2);
             this.board.render();
             this.snake.render();
         });
+    },
+    update() {
+        this.snake.move();
+        this.render();
+    },
+    run() {
+        this.create();
+        // move snake every 100ms and render new frame
+        setInterval(() => {
+            this.update();
+        }, 150);
     },
 };
 

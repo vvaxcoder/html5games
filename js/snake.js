@@ -16,4 +16,22 @@ game.snake = {
             this.game.ctx.drawImage(this.game.sprites.body, cell.x, cell.y);
         });
     },
+    move() {
+        // get next cell
+        let cell = this.getNextCell();
+        /**
+         * if cell exists add new cell in the snake.cells
+         * remove last cell from snake.cells
+         */
+        if (cell) {
+            this.cells.unshift(cell);
+            this.cells.pop();
+        }
+    },
+    getNextCell() {
+        let head = this.cells[0];
+        let row = head.row - 1;
+        let col = head.col;
+        return this.game.board.getCell(row, col);
+    },
 };
