@@ -63,20 +63,28 @@ game.snake = {
          */
         if (cell) {
             this.cells.unshift(cell);
-            this.cells.pop();
+
+            if (!this.game.board.isFoodCell(cell)) {
+                // if the next cell isn't an apple - remove the tail of the snake
+                this.cells.pop();
+            }
+            else {
+                // if new cell is an apple
+                this.game.board.createFood();
+            }
         }
     },
     moving: false,
     start(keyCode) {
-        switch(keyCode) {
+        switch (keyCode) {
             case 38: this.direction = this.directions.up;
-            break;
+                break;
             case 37: this.direction = this.directions.left;
-            break;
+                break;
             case 39: this.direction = this.directions.right;
-            break;
+                break;
             case 40: this.direction = this.directions.down;
-            break;
+                break;
         }
 
         this.moving = true;

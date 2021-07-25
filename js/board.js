@@ -24,8 +24,15 @@ game.board = {
         }
     },
     createFood() {
+        // get the current apple and clear others
+        let cell = this.cells.find(cell => cell.hasFood);
+
+        if (cell) {
+            cell.hasFood = false;
+        }
+
         // get random cell and set into it the apple
-        let cell = this.getRandomAvailableCell();
+        cell = this.getRandomAvailableCell();
 
         cell.hasFood = true;
     },
@@ -41,6 +48,9 @@ game.board = {
         let index = this.game.random(0, pool.length - 1);
 
         return pool[index];
+    },
+    isFoodCell(cell) {
+        return cell.hasFood;
     },
     render() {
         this.cells.forEach(cell => {
