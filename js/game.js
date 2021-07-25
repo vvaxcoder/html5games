@@ -52,6 +52,7 @@ let game = {
         body: null,
         cell: null,
         food: null,
+        head: null,
     },
     width: 0,
     init() {

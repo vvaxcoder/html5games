@@ -45,10 +45,19 @@ game.snake = {
     hasCell(cell) {
         this.cells.find(part => part === cell);
     },
+    renderHead() {
+        // get head of snake and rebder it
+        let head = this.cells[0];
+        this.game.ctx.drawImage(this.game.sprites.head, head.x, head.y);
+    },
+    renderBody() {
+        for (let i = 1; i < this.cells.length; i++) {
+            this.game.ctx.drawImage(this.game.sprites.body, this.cells[i].x, this.cells[i].y);
+        }
+    },
     render() {
-        this.cells.forEach(cell => {
-            this.game.ctx.drawImage(this.game.sprites.body, cell.x, cell.y);
-        });
+        this.renderHead();
+        this.renderBody();
     },
     move() {
         if (!this.moving) {
