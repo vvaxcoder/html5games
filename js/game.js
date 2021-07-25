@@ -51,6 +51,7 @@ let game = {
         background: null,
         body: null,
         cell: null,
+        food: null,
     },
     width: 0,
     init() {
@@ -89,10 +90,14 @@ let game = {
         // create game objects
         this.board.create();
         this.snake.create();
+        this.board.createFood();
         // set game events
         window.addEventListener('keydown', (e) => {
             this.snake.start(e.keyCode);
         });
+    },
+    random(min, max) {
+        return Math.floor(Math.random() * (max + 1 - min) + min);
     },
     render() {
         // render game objects

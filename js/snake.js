@@ -34,6 +34,17 @@ game.snake = {
         },
     },
     game: game,
+    getNextCell() {
+        let head = this.cells[0];
+
+        let row = head.row + this.direction.row;
+        let col = head.col + this.direction.col;
+
+        return this.game.board.getCell(row, col);
+    },
+    hasCell(cell) {
+        this.cells.find(part => part === cell);
+    },
     render() {
         this.cells.forEach(cell => {
             this.game.ctx.drawImage(this.game.sprites.body, cell.x, cell.y);
@@ -56,14 +67,6 @@ game.snake = {
         }
     },
     moving: false,
-    getNextCell() {
-        let head = this.cells[0];
-
-        let row = head.row + this.direction.row;
-        let col = head.col + this.direction.col;
-
-        return this.game.board.getCell(row, col);
-    },
     start(keyCode) {
         switch(keyCode) {
             case 38: this.direction = this.directions.up;

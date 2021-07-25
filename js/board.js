@@ -23,13 +23,32 @@ game.board = {
             }
         }
     },
+    createFood() {
+        // get random cell and set into it the apple
+        let cell = this.getRandomAvailableCell();
+
+        cell.hasFood = true;
+    },
     game: game,
     getCell(row, col) {
         return this.cells.find(cell => cell.row === row && cell.col === col);
     },
+    getRandomAvailableCell() {
+        let pool = this.cells.filter(cell => {
+            return !this.game.snake.hasCell(cell);
+        });
+
+        let index = this.game.random(0, pool.length - 1);
+
+        return pool[index];
+    },
     render() {
         this.cells.forEach(cell => {
             this.game.ctx.drawImage(this.game.sprites.cell, cell.x, cell.y);
+
+            if (cell.hasFood) {
+                this.game.ctx.drawImage(this.game.sprites.food, cell.x, cell.y);
+            }
         });
     },
     size: 15,
