@@ -17,20 +17,23 @@ game.snake = {
         up: {
             row: -1,
             col: 0,
+            angle: 0,
         },
         down: {
             row: 1,
             col: 0,
+            angle: 180,
 
         },
         right: {
             row: 0,
             col: 1,
-
+            angle: 90,
         },
         left: {
             row: 0,
             col: -1,
+            angle: 270,
         },
     },
     game: game,
@@ -48,7 +51,19 @@ game.snake = {
     renderHead() {
         // get head of snake and rebder it
         let head = this.cells[0];
-        this.game.ctx.drawImage(this.game.sprites.head, head.x, head.y);
+        let halfSize = this.game.sprites.head.width / 2;
+        // save prev context
+        this.game.ctx.save();
+        // move the origin to the center of the head
+        this.game.ctx.translate(head.x, head.y);
+        // move the origin to the coordinates of the head
+        this.game.ctx.translate(halfSize, halfSize);
+        // rotate context relative the sprite's center
+        this.game.ctx.rotate(this.direction.angle * Math.PI / 180);
+        // rendering the head with contextual rotation
+        this.game.ctx.drawImage(this.game.sprites.head, -halfSize, -halfSize);
+        // restore the source state of the context
+        this.game.ctx.restore();
     },
     renderBody() {
         for (let i = 1; i < this.cells.length; i++) {
