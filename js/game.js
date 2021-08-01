@@ -50,6 +50,7 @@ let game = {
     sprites: {
         background: null,
         body: null,
+        bomb: null,
         cell: null,
         food: null,
         head: null,
@@ -92,6 +93,7 @@ let game = {
         this.board.create();
         this.snake.create();
         this.board.createFood();
+        this.board.createBomb();
         // set game events
         window.addEventListener('keydown', (e) => {
             this.snake.start(e.keyCode);
@@ -119,6 +121,12 @@ let game = {
         setInterval(() => {
             this.update();
         }, 150);
+
+        setInterval(() => {
+            if (this.snake.moving) {
+                this.board.createBomb();
+            }
+        }, 3000);
     },
 };
 
