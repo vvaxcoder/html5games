@@ -1,5 +1,6 @@
 let game = {
     board: null,
+    bombInterval: 0,
     canvas: null,
     ctx: null,
     dimensions: {
@@ -26,6 +27,7 @@ let game = {
         this.width = Math.floor((data.realWidth * this.height) / data.realHeight);
         this.canvas.style.width = '100%';
     },
+    gameInterval: 0,
     height: 0,
     initDimensions() {
         let data = {
@@ -66,6 +68,12 @@ let game = {
         this.preload(() => {
             this.run();
         });
+    },
+    stop() {
+        clearInterval(this.gameInterval);
+        clearInterval(this.bombInterval);
+        alert('Game over');
+        window.location.reload();
     },
     preload(callback) {
         let loaded = 0;
@@ -118,11 +126,11 @@ let game = {
     run() {
         this.create();
         // move snake every 100ms and render new frame
-        setInterval(() => {
+        this.gameInterval = setInterval(() => {
             this.update();
         }, 150);
 
-        setInterval(() => {
+        this.bombInterval = setInterval(() => {
             if (this.snake.moving) {
                 this.board.createBomb();
             }
