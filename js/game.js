@@ -49,6 +49,14 @@ let game = {
         this.canvas.height = this.height;
         
     },
+    onSnakeStart() {
+        this.sounds.theme.loop = true;
+        this.sounds.theme.play();
+    },
+    onSnakeEat() {
+        this.sounds.food.play();
+        this.board.createFood();
+    },
     sounds: {
         bomb: null,
         food: null,
@@ -75,6 +83,7 @@ let game = {
         });
     },
     stop() {
+        this.sounds.bomb.play();
         clearInterval(this.gameInterval);
         clearInterval(this.bombInterval);
         alert('Game over');

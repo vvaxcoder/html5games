@@ -101,7 +101,7 @@ game.snake = {
           this.cells.pop();
         } else {
           // if new cell is an apple
-          this.game.board.createFood();
+          this.game.onSnakeEat();
         }
       }
     }
@@ -121,6 +121,10 @@ game.snake = {
       case 40:
         this.direction = this.directions.down;
         break;
+    }
+
+    if (!this.moving) {
+      this.game.onSnakeStart();
     }
 
     this.moving = true;
